@@ -1,0 +1,13 @@
+
+terraform {
+  backend "s3" {
+    bucket                      = "bucket-name"
+    key                         = "bucket-name_state.tfstate"
+    region                      = "fr-par"
+    endpoint                    = "https://s3.fr-par.scw.cloud"
+    access_key                  = "SCWaccess_keyaccess_keyaccess_keyaccess_key"
+    secret_key                  = "12345678-1234-1234-1234-123456789012"
+    skip_credentials_validation = true
+    skip_region_validation      = true
+  }
+}

@@ -1,0 +1,167 @@
+#cloud-config
+
+write_files:
+  - path: /etc/cron.daily/apt-check
+    content: |
+      apt-get update -qq
+      apt-get upgrade -ydqq
+  - path: /etc/skel/.bashrc
+    content: |
+      #
+      case $- in
+          *i*) ;;
+            *) return;;
+      esac
+      set -o noclobber
+      bind Space:magic-space
+      shopt -s globstar 2> /dev/null
+      bind "set completion-ignore-case on"
+      bind "set completion-map-case on"
+      bind "set show-all-if-ambiguous on"
+      HISTCONTROL=ignoreboth
+      shopt -s histappend
+      shopt -s cmdhist
+      PROMPT_COMMAND='history -a'
+      HISTSIZE=8000
+      HISTFILESIZE=40000
+      shopt -s checkwinsize
+      bind '"\e[A": history-search-backward'
+      bind '"\e[B": history-search-forward'
+      bind '"\e[C": forward-char'
+      bind '"\e[D": backward-char'
+      CDPATH="."
+      shopt -s cdable_vars
+
+      export VISUAL=nano
+      export EDITOR=nano
+      export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+      export PATH="$PATH:$HOME/.config/composer/vendor/bin:$HOME/.gem/ruby/2.6.0/bin:$HOME/.gem/ruby/2.7.0/bin"
+      export PATH="$HOME/.poetry/bin:$PATH"
+      export GOPATH="$HOME/go"
+      export PATH="$PATH:$GOPATH/bin"
+
+      stty -ixon -ixoff
+      if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+          debian_chroot=$(cat /etc/debian_chroot)
+      fi
+      case "$TERM" in
+          xterm-color) color_prompt=yes;;
+      esac
+      color_prompt=yes
+      if [ "$color_prompt" = yes ]; then
+      PS1="${debian_chroot:+($debian_chroot)}\[\033[38;5;7m\]\t\[$(tput sgr0)\]\[\033[38;5;15m\]:\[$(tput sgr0)\]\[\033[38;5;37m\]\u\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput bold)\]\\[\033[38;5;208m\]\h\[$(tput sgr0)\]\[$(tput bold)\]\\[\033[38;5;14m\]\w\[$(tput sgr0)\]\[\033[38;5;10m\]\\$\[$(tput sgr0)\]"
+      else
+          PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+      fi
+      case "$TERM" in
+      xterm*|rxvt*)
+          PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+          ;;
+      *)
+          ;;
+      esac
+      if [ -x /usr/bin/dircolors ]; then
+          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+          alias ls='ls --color=auto'
+          alias dir='dir --color=auto'
+          alias vdir='vdir --color=auto'
+
+          alias grep='grep --color=auto'
+          alias fgrep='fgrep --color=auto'
+          alias egrep='egrep --color=auto'
+      fi
+      if [ -f ~/.bash_aliases ]; then
+          . ~/.bash_aliases
+      fi
+      if ! shopt -oq posix; then
+        if [ -f /usr/share/bash-completion/bash_completion ]; then
+          . /usr/share/bash-completion/bash_completion
+        elif [ -f /etc/bash_completion ]; then
+          . /etc/bash_completion
+        fi
+      fi
+
+  - path: /etc/gitconfig
+    encoding: b64
+    content: |
+      #
+      [push]
+              default = simple
+      [pull]
+              rebase = true
+      [user]
+              email = yourmail@domain
+              name = you
+      [alias]
+              ci=commit
+              st=status
+              co=checkout
+              ad=add -A
+              di=diff
+              br=branch
+              cp=cherry-pick
+              log2=log --graph --oneline --decorate
+              it = !git init && git commit -m “root” --allow-empty
+              commend = commit --amend --no-edit
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] https://download.docker.com/linux/debian $RELEASE stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
+apt_update: true
+apt_upgrade: true
+
+groups:
+  - cloud-users
+  - docker
+  - vmail
+
+users:
+  - default
+  - name: you
+    gecos: you
+    shell: /bin/bash
+    primary_group: you
+    groups: sudo, docker, cloud-users, vmail
+    lock_passwd: false
+    passwd: $6$bzzbzzbzzzzzzz.
+  - name: vmail
+    system: true
+    homedir: /var/vmail/
+    groups: vmail
+
+packages:
+  - ca-certificates
+  - apt-transport-https
+  - gnupg-agent
+  - software-properties-common
+  - curl
+  - rsync
+  - telnet
+  - sudo
+  - byobu
+  - iptables-persistent
+  - ntp
+  - git
+  - python3
+  - postfix-doc
+  - opendkim-tools
+  - bind9-utils
+  - mariadb-client
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+
+runcmd:
+  - systemctl daemon-reload
+  - mkdir /home/you/.ssh/
+  - cp /root/.ssh/authorized_keys /home/you/.ssh/authorized_keys
+  - chown -R you:you /home/you/
+  - systemctl enable docker
+  - systemctl start docker
+
+phone_home:
+    url: https://changeme-infra-phonehome.functions.fnc.fr-par.scw.cloud
+    post: all
+    tries: 10

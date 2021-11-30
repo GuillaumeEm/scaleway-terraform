@@ -1,0 +1,16 @@
+# rename exampletfvars to tfvars
+
+project_name = "project"
+# Use fr-par-2 for greener servers, 1.15 PUE dc (WW average in 2020 was 1.59), -40% power consumption, +~8% price increase
+zone = "fr-par-2"
+access_key = "SCWaccess_keyaccess_keyaccess_keyaccess_key"
+secret_key = "12345678-1234-1234-1234-123456789012"
+organization_id = "12345678-1234-1234-1234-123456789012"
+project_id = "12345678-1234-1234-1234-123456789012"
+core_vol = "12345678-1234-1234-1234-123456789012"
+mail_vol = "12345678-1234-1234-1234-123456789012"
+general_core_ports = [22000,80,443,53]
+general_mail_ports = [22000,25,465,993]
+private_core_ports = [22,3306,5432]
+private_mail_ports = [22]
+friendly_ip = "10.0.0.1"

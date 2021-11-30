@@ -1,0 +1,26 @@
+[push]
+        default = simple
+[pull]
+        rebase = true
+[user]
+        email = guillaume@nuaj.eu
+        name = Guillaume M
+[alias]
+
+        ci=commit
+        st=status
+        co=checkout
+        ad=add -A
+        di=diff
+        br=branch
+        cp=cherry-pick
+        log2=log --graph --oneline --decorate
+	logmoji = ! git log --color | emojify | less -r
+        grog = log --graph --abbrev-commit --decorate --all --format=format:\"%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(dim white) - %an%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n %C(white)%s%C(reset)\"
+	merc = merge --no-ff
+	it = !git init && git commit -m “root” --allow-empty
+	commend = commit --amend --no-edit
+	ls = log --pretty=format:\"%C(yellow)%h%Cred%d\\\\ %Creset%s%Cblue\\\\ [%cn]\" --decorate
+
+[core]
+        editor=nano
