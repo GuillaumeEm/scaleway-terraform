@@ -82,7 +82,6 @@ write_files:
       fi
 
   - path: /etc/gitconfig
-    encoding: b64
     content: |
       #
       [push]
@@ -115,9 +114,12 @@ apt_upgrade: true
 groups:
   - cloud-users
   - docker
-  - vmail
 
 users:
+  - name: vmail
+    system: true
+    homedir: /var/vmail/
+    groups: vmail
   - default
   - name: you
     gecos: you
@@ -126,11 +128,6 @@ users:
     groups: sudo, docker, cloud-users, vmail
     lock_passwd: false
     passwd: $6$bzzbzzbzzzzzzz.
-  - name: vmail
-    system: true
-    homedir: /var/vmail/
-    groups: vmail
-
 packages:
   - ca-certificates
   - apt-transport-https
