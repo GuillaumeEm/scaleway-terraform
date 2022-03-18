@@ -19,6 +19,12 @@ variable general_core_ports {
 variable general_mail_ports {
   default = [22,25,465,993]
 }
+variable general_core_ports_udp {
+  default = []
+}
+variable general_mail_ports_udp {
+  default = []
+}
 variable private_core_ports {
   default = []
 }

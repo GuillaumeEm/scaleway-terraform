@@ -23,7 +23,7 @@ resource "scaleway_instance_server" "mail" {
   additional_volume_ids = [ data.scaleway_instance_volume.mail_vol.id ]
 
   user_data = {
-    cloud-init = file("${path.module}/cloud-init.yaml")
+    cloud-init = file("${path.module}/cloud-init-mail.yaml")
   }
 }
 
@@ -44,6 +44,6 @@ resource "scaleway_instance_server" "core" {
   additional_volume_ids = [ data.scaleway_instance_volume.core_vol.id]
 
   user_data = {
-    cloud-init = file("${path.module}/cloud-init.yaml")
+    cloud-init = file("${path.module}/cloud-init-core.yaml")
   }
 }

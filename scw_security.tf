@@ -28,6 +28,15 @@ resource "scaleway_instance_security_group_rules" "sg-mail-rules" {
   }
 
   dynamic "inbound_rule" {
+    for_each = var.general_mail_ports_udp
+    content {
+      action = "accept"
+      protocol = "UDP"
+      port   = inbound_rule.value
+    }
+  }
+
+  dynamic "inbound_rule" {
     for_each = var.private_mail_ports
     content {
       action = "accept"
@@ -70,6 +79,15 @@ resource "scaleway_instance_security_group_rules" "sg-core_rules" {
     for_each = var.general_core_ports
     content {
       action = "accept"
+      port   = inbound_rule.value
+    }
+  }
+
+  dynamic "inbound_rule" {
+    for_each = var.general_core_ports_udp
+    content {
+      action = "accept"
+      protocol = "UDP"
       port   = inbound_rule.value
     }
   }
